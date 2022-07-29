@@ -1,0 +1,43 @@
+microservice: #object
+  app: "user-auth" #close with quote #this is key-value pair
+  port: 9000
+  version: 1.7
+
+microservice_2: #object
+  - app: user-auth #"dash" creates a list
+    port: 9000
+    version: 1.7
+    deployed: yes #boolean: true/false; yes/no; on/off
+  - app: shopping-cart
+    port: 9002
+    version: 
+    - 1.9
+    - 2.0 #list of lists
+    - 2.1
+    #OR:
+    # version: [1.9, 2.0, 2.1]
+
+microservice_2: 
+  - user-auth
+  - shopping
+
+
+apiVersion: v1
+kind: Pod
+metadata:
+  name: nginx
+  labels:
+    app: nginx
+spec: 
+  containers:
+    - name: nginx-container
+      image: nginx
+      ports:
+      - containerPort: 80
+      volumeMounts:
+      - name: gnix-vol
+        mountPath: /usr/nginx/html
+    - name: sidecar-container
+      image: curlimages/curl
+      command: ["/bin/sh"]
+      args: ["-c", "echo Hello form the sidecar container; sleep 300"]
